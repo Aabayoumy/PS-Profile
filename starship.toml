@@ -4,8 +4,10 @@ $username\
 [](bg:#434C5E fg:#3B4252)\
 $directory\
 [](fg:#434C5E bg:#4C566A)\
+$python\
 $git_branch\
 $git_status\
+
 [](fg:#4C566A bg:#86BBD8)\
 $c\
 $elixir\
@@ -17,7 +19,6 @@ $julia\
 $nodejs\
 $nim\
 $rust\
-$python\
 [](fg:#86BBD8 bg:#06969A)\
 $docker_context\
 [](fg:#06969A bg:#33658A)\
@@ -83,6 +84,12 @@ format = '[ $symbol $branch ]($style)'
 style = "bg:#4C566A"
 format = '[$all_status$ahead_behind ]($style)'
 
+[python]
+symbol = ''
+python_binary = ["./venv/bin/python", "python3", "python", "python2"]
+style = "bg:#4C566A"
+format = '[ $symbol ]($style)'
+
 [golang]
 symbol = " "
 style = "bg:#86BBD8"
@@ -124,8 +131,3 @@ time_format = "%R" # Hour:Minute Format
 style = "bg:#33658A"
 format = '[ $time ]($style)'
 
-[python]
-symbol = '👾'
-python_binary = ["./venv/bin/python", "python3", "python", "python2"]
-style = "bg:#86BBD8"
-format = '[ $symbol ]($style)'
