@@ -16,11 +16,8 @@ Set-Alias grep findstr
 function ix ($file) {
   curl.exe -F "f:1=@$file" ix.io
 }
+Import-Module PSReadLine
 
-if ($host.Name -eq 'ConsoleHost')
-{
-  Import-Module PSReadLine
-  # PSReadLine
 
   $PSReadLineOptions = @{
     EditMode = "Emacs"
@@ -45,14 +42,11 @@ if ($host.Name -eq 'ConsoleHost')
   # Autocompleteion for Arrow keys
   Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-}
 
-function cd {
-    param (
-        [string]$dir
-    )
-    Set-Location -Path $dir
-    Get-ChildItem | Format-Table -AutoSize
+  Set-PSReadLineKeyHandler -Key Ctrl+z -Function Undo
+if ($host.Name -eq 'ConsoleHost')
+{
+  Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 }
 
 Invoke-Expression (&starship init powershell)

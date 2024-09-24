@@ -13,9 +13,14 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
 
 If (Test-Path -Path "$env:TEMP\Fonts") { Remove-Item -Recurse -Force $env:TEMP\Fonts }
 
+$installFonts = Read-Host "Do you want to install the fonts? (Y/N)"
+if ($installFonts -ne "Y" -and $installFonts -ne "y") {
+    Write-Host "Fonts installation aborted by user."}
+else {
+
+
+
 Write-Host "Download Fonts"
-
-
 $downloadAndInstallFont = {
     param (
         $fontName,
@@ -128,6 +133,7 @@ if ($FontDownloaded) {
         }
     }
     Move-Item "$env:TEMP\Fonts\*.ttf" "C:\Windows\Fonts\" -force
+}
 }
 Write-Host "Install Terminal-Icons if not installed"
 if (-not (Get-Module -Name "Terminal-Icons")) {
