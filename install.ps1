@@ -10,28 +10,30 @@ if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
     }
 }
 
-
-If (Test-Path -Path "$env:TEMP\Fonts") { Remove-Item -Recurse -Force $env:TEMP\Fonts }
-
-$installFonts = Read-Host "Do you want to install the fonts? (Y/N)"
-if ($installFonts -ne "Y" -and $installFonts -ne "y") {
-    Write-Host "Fonts installation aborted by user."}
-else {
-
-
-
-Write-Host "Download Fonts"
-$downloadAndInstallFont = {
+function Install-NerdFonts {
     param (
-        $fontName,
-        $fontPath,
-        $zipFileName
+        [string]$nerdfontsVersion,
+        [datetime]$nerdfontsReleaseDate,
+        [hashtable]$fonts
     )
-    Write-Host "Downloading and installing $fontName font"
-    Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$zipFileName.zip" -OutFile "$env:TEMP\$zipFileName.zip"
-    Expand-Archive -LiteralPath "$env:TEMP\$zipFileName.zip" -DestinationPath "$env:TEMP\Fonts\" -force
-    $FontDownloaded = $true
+    $FontDownloaded = $false
+    foreach ($font in $fonts.GetEnumerator()) {
+        $fontName = $font.Key
+        $fontFamily = $font.Value
+        $zipFileName = $fontName
+        if ((New-Object System.Drawing.Text.InstalledFontCollection).Families.Name.Contains($fontFamily)) {
+            Write-Host "Downloading and installing $fontName font"
+            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$zipFileName.zip" -OutFile "$env:TEMP\$zipFileName.zip"
+            Expand-Archive -LiteralPath "$env:TEMP\$zipFileName.zip" -DestinationPath "$env:TEMP\Fonts\" -force
+            $FontDownloaded = $true
+        } else {
+            write-Host "Font $fontFamily is already installed"
+        }
+    }
+    return $FontDownloaded
 }
+
+
 
 
 # Add the following lines to get and display the version
@@ -41,90 +43,20 @@ $nerdfontsReleaseDate = [datetime]::Parse($nerdfontsRelease.published_at).ToStri
 Write-Host "Nerd Fonts Version: $nerdfontsVersion"
 Write-Host "Release Date: $nerdfontsReleaseDate"
 
-$FontDownloaded = $false
-## Hack Fonts
-$hackFontPath = "C:\Windows\Fonts\HackNerdFontPropo-Regular.ttf"
-
-if (-not (Test-Path -Path $hackFontPath)) {
-    Write-Host "Downloading and installing Hack font"
-    Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/Hack.zip" -OutFile "$env:TEMP\Hack.zip"
-    Expand-Archive -LiteralPath "$env:TEMP\Hack.zip" -DestinationPath "$env:TEMP\Fonts\" -force
-    $FontDownloaded = $true
-} 
-else {
-    Write-Host "Hack font already exists"
+# Define font paths in a hashtable
+$fonts = @{
+    "FiraCode" = "FiraCode"
+    "Hack" = "Hack Nerd"
+    "JetBrainsMono" = "Jet Brains"
+    "SourceCodePro" = "Source Code"
 }
 
-## JetBrainsMono Fonts
-
-# Check if JetBrainsMono font needs to be downloaded
-$jetBrainsMonoFontPath = "C:\Windows\Fonts\JetBrainsMonoNerdFont-Regular.ttf"
-
-if (-not (Test-Path -Path $jetBrainsMonoFontPath)) {
-    &$downloadAndInstallFont "JetBrainsMono" $jetBrainsMonoFontPath "JetBrainsMono"
-} else {
-    $fontCreatedDate = (Get-Item -Path $jetBrainsMonoFontPath).LastWriteTime.ToString("yyyy-MM-dd")
-    if ([datetime]::Parse($fontCreatedDate) -lt [datetime]::Parse($nerdfontsReleaseDate)) {
-        Write-Host "Existing JetBrainsMono font is older than the latest release date"
-        &$downloadAndInstallFont "JetBrainsMono" $jetBrainsMonoFontPath "JetBrainsMono"
-    } else {
-        Write-Host "JetBrainsMono font is up to date"
-    }
-}
-
-## CascadiaCode Fonts
-
-# Check if CascadiaCode font needs to be downloaded
-$cascadiaCodeFontPath = "C:\Windows\Fonts\CaskaydiaCoveNerdFont-Regular.ttf"
-
-if (-not (Test-Path -Path $cascadiaCodeFontPath)) {
-    &$downloadAndInstallFont "CascadiaCode" $cascadiaCodeFontPath "CascadiaCode"
-} else {
-    $fontCreatedDate = (Get-Item -Path $cascadiaCodeFontPath).LastWriteTime.ToString("yyyy-MM-dd")
-    if ([datetime]::Parse($fontCreatedDate) -lt [datetime]::Parse($nerdfontsReleaseDate)) {
-        Write-Host "Existing CascadiaCode font is older than the latest release date"
-        &$downloadAndInstallFont "CascadiaCode" $cascadiaCodeFontPath "CascadiaCode"
-    } else {
-        Write-Host "CascadiaCode font is up to date"
-    }
-}
-
-## FiraCode Fonts
-# Check if FiraCode font needs to be downloaded
-$firaCodeFontPath = "C:\Windows\Fonts\FiraCodeNerdFont-Regular.ttf"
-if (-not (Test-Path -Path $firaCodeFontPath)) {
-    &$downloadAndInstallFont "FiraCode" $firaCodeFontPath "FiraCode"
-} else {
-    $fontCreatedDate = (Get-Item -Path $firaCodeFontPath).LastWriteTime.ToString("yyyy-MM-dd")
-    if ([datetime]::Parse($fontCreatedDate) -lt [datetime]::Parse($nerdfontsReleaseDate)) {
-        Write-Host "Existing FiraCode font is older than the latest release date"
-        &$downloadAndInstallFont "FiraCode" $firaCodeFontPath "FiraCode"
-    } else {
-        Write-Host "FiraCode font is up to date"
-    }
-}
-
-## SourceCodePro Fonts
-# Check if SourceCodePro font needs to be downloaded
-$sourceCodeProFontPath = "C:\Windows\Fonts\SauseCodeProNerdFont-Regular.ttf"
-
-if (-not (Test-Path -Path $sourceCodeProFontPath)) {
-    &$downloadAndInstallFont "SourceCodePro" $sourceCodeProFontPath "SourceCodePro"
-} else {
-    $fontCreatedDate = (Get-Item -Path $sourceCodeProFontPath).LastWriteTime.ToString("yyyy-MM-dd")
-    if ([datetime]::Parse($fontCreatedDate) -lt [datetime]::Parse($nerdfontsReleaseDate)) {
-        Write-Host "Existing SourceCodePro font is older than the latest release date"
-        &$downloadAndInstallFont "SourceCodePro" $sourceCodeProFontPath "SourceCodePro"
-    } else {
-        Write-Host "SourceCodePro font is up to date"
-    }
-}
-
+$FontDownloaded = Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -nerdfontsReleaseDate $nerdfontsReleaseDate -fonts $fonts
 
 if ($FontDownloaded) {
     Write-Host "Install fonts"
     $fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
-    foreach ($file in Get-ChildItem "$env:TEMP\Fonts\*windows*.ttf")
+    foreach ($file in Get-ChildItem "$env:TEMP\Fonts\*.ttf")
     {
         $fileName = $file.Name
         if (-not(Test-Path -Path "C:\Windows\fonts\$fileName" )) {
@@ -134,7 +66,7 @@ if ($FontDownloaded) {
     }
     Move-Item "$env:TEMP\Fonts\*.ttf" "C:\Windows\Fonts\" -force
 }
-}
+
 Write-Host "Install Terminal-Icons if not installed"
 if (-not (Get-Module -Name "Terminal-Icons")) {
     Write-Host "Installing Terminal-Icons" 
