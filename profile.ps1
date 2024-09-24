@@ -3,31 +3,46 @@
 [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
 
 Import-Module -Name Terminal-Icons
+Import-Module z
+
 
 # Alias
 Set-Alias -Name vim -Value nvim
 Set-Alias ll ls
 Set-Alias g git
 Set-Alias grep findstr
+function ix ($file) {
+  curl.exe -F "f:1=@$file" ix.io
+}
 
 if ($host.Name -eq 'ConsoleHost')
 {
   Import-Module PSReadLine
   # PSReadLine
-  Set-PSReadLineOption -EditMode Emacs
-  Set-PSReadLineOption -BellStyle None
-  
+
+  $PSReadLineOptions = @{
+    EditMode = "Emacs"
+    HistoryNoDuplicates = $true
+    BellStyle = "None"
+    ShowToolTips = $true
+    PredictionSource = "History"
+    PredictionViewStyle = "ListView"
+    # PredictionViewStyle = "InlineView"
+    MaximumHistoryCount = 4096
+    HistorySavePath = "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+
+    HistorySearchCursorMovesToEnd = $true
+    Colors = @{
+        "Command" = "#8181f7"
+    }
+  }
+  Set-PSReadLineOption @PSReadLineOptions
   # Shows navigable menu of all options when hitting Tab
   Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
   # Autocompleteion for Arrow keys
-  Set-PSReadLineOption -HistorySearchCursorMovesToEnd
   Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
-
-  Set-PSReadLineOption -ShowToolTips
-  Set-PSReadLineOption -PredictionSource History
-
 }
 
 Invoke-Expression (&starship init powershell)
