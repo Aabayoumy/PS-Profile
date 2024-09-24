@@ -11,12 +11,15 @@ Write-Host "Download Fonts"
 #Expand-Archive -LiteralPath "$env:TEMP\Hack.zip" -DestinationPath "$env:TEMP\Fonts\" -force
 
 ## JetBrainsMono Fonts
-#Invoke-WebRequest https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/JetBrainsMono.zip  -OutFile "$env:TEMP\JetBrainsMono.zip"
-#Expand-Archive -LiteralPath "$env:TEMP\JetBrainsMono.zip" -DestinationPath "$env:TEMP\Fonts\" -force
+if (-not(Test-Path -Path "C:\Windows\Fonts\JetBrainsMono*.ttf" )) {
+# Assuming that $fileName contains the name of the font file you are checking for
+Invoke-WebRequest https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/JetBrainsMono.zip  -OutFile "$env:TEMP\JetBrainsMono.zip"
+Expand-Archive -LiteralPath "$env:TEMP\JetBrainsMono.zip" -DestinationPath "$env:TEMP\Fonts\" -force
+}
 
 ## CascadiaCode Fonts
-Invoke-WebRequest https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/CascadiaCode.zip -OutFile "$env:TEMP\CascadiaCode.zip"
-Expand-Archive -LiteralPath "$env:TEMP\CascadiaCode.zip" -DestinationPath "$env:TEMP\Fonts\" -force
+# Invoke-WebRequest https://github.com/ryanoasis/nerd-fonts/releases/download/v2.2.2/CascadiaCode.zip -OutFile "$env:TEMP\CascadiaCode.zip"
+# Expand-Archive -LiteralPath "$env:TEMP\CascadiaCode.zip" -DestinationPath "$env:TEMP\Fonts\" -force
 Write-Host "Install fonts"
 $fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
 foreach ($file in Get-ChildItem "$env:TEMP\Fonts\*windows*.ttf")

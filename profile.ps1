@@ -8,7 +8,9 @@ Import-Module z
 
 # Alias
 Set-Alias -Name vim -Value nvim
+Set-Alias -Name vi -Value nvim
 Set-Alias ll ls
+Set-Alias -Name la -Value 'Get-ChildItem -Force' -Option AllScope
 Set-Alias g git
 Set-Alias grep findstr
 function ix ($file) {
@@ -43,6 +45,14 @@ if ($host.Name -eq 'ConsoleHost')
   # Autocompleteion for Arrow keys
   Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+}
+
+function cd {
+    param (
+        [string]$dir
+    )
+    Set-Location -Path $dir
+    Get-ChildItem | Format-Table -AutoSize
 }
 
 Invoke-Expression (&starship init powershell)
