@@ -5,10 +5,10 @@
 Import-Module -Name Terminal-Icons
 Import-Module z
 
-
 # Alias
 Set-Alias -Name vim -Value nvim
 Set-Alias -Name vi -Value nvim
+Set-Alias -Name ls -Value 'Get-ChildItem -Force -View Compact'
 Set-Alias ll ls
 Set-Alias -Name la -Value 'Get-ChildItem -Force' -Option AllScope
 Set-Alias g git
