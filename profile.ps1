@@ -4,19 +4,16 @@
 
 Import-Module -Name Terminal-Icons
 Import-Module z
+Import-Module PSReadLine
 
 # Alias
 Set-Alias -Name vim -Value nvim
 Set-Alias -Name vi -Value nvim
-Set-Alias -Name ls -Value 'Get-ChildItem -Force -View Compact'
+Set-Alias -Name ls -Value 'Get-ChildItem'
 Set-Alias ll ls
 Set-Alias -Name la -Value 'Get-ChildItem -Force' -Option AllScope
 Set-Alias g git
 Set-Alias grep findstr
-function ix ($file) {
-  curl.exe -F "f:1=@$file" ix.io
-}
-Import-Module PSReadLine
 
 
   $PSReadLineOptions = @{
