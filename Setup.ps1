@@ -124,3 +124,5 @@ if (Test-Path $jsonPath) {
 # If the JSON file does not exist or the version/release date has changed, update the JSON file
 $currentReleaseInfo | ConvertTo-Json | Set-Content -Path $jsonPath
 Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -fonts $fonts
+
+Write-Host "Profile has been installed. Please restart your shell to reflect changes!" -ForegroundColor Magenta
