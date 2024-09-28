@@ -7,13 +7,12 @@ Import-Module z
 Import-Module PSReadLine
 
 # Alias
-Set-Alias -Name vim -Value nvim
-Set-Alias -Name vi -Value nvim
-Set-Alias -Name ls -Value 'Get-ChildItem'
-Set-Alias ll ls
 Set-Alias g git
 Set-Alias grep findstr
 
+# Enhanced Listing
+function la { Get-ChildItem -Path . -Force | Format-Table -AutoSize }
+function ll { Get-ChildItem -Path . -Force -Hidden | Format-Table -AutoSize }
 
   $PSReadLineOptions = @{
     EditMode = "Emacs"
