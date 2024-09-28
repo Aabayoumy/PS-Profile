@@ -62,10 +62,21 @@ function Install-NerdFonts {
 }
 
 
-Write-Host "Install Terminal-Icons if not installed"
-if (-not (Get-Module -Name "Terminal-Icons")) {
+$latestTerminalIconsVersion = (Find-Module -Name "Terminal-Icons").Version
+$installedModule = Get-Module -ListAvailable -Name "Terminal-Icons"
+
+if (-not $installedModule) {
     Write-Host "Installing Terminal-Icons" 
-    Install-Module Terminal-Icons -force }
+    Install-Module -Name Terminal-Icons -Force
+} else {
+    $installedVersion = $installedModule.Version
+    if ($installedVersion -lt $latestTerminalIconsVersion) {
+        Write-Host "Updating Terminal-Icons from version $installedVersion to $latestTerminalIconsVersion"
+        Update-Module -Name Terminal-Icons -Force
+    } else {
+        Write-Host "Terminal-Icons module is already up to date."
+    }
+}
 
 Write-Host "Install Profile"
 If (Test-Path -Path "$PROFILE") {
