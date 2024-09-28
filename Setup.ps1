@@ -27,12 +27,15 @@ function Test-CommandExists {
     return $exists
 }
 
-Write-Host "Install starship https://starship.rs/ if not installed"
+
+
 if (-not (Test-CommandExists winget)) {
-        Write-Host "winget is not installed or not in your PATH. you have to install starship manually"
-        Start-Process "https://starship.rs/" 
+    Write-Host "winget is not installed or not in your PATH. you have to install starship manually"
+    Start-Process "https://starship.rs/" 
     else {
-        if ((Test-CommandExists starship).count -lt 5) { winget install Starship.Starship --force }
+        if ((Test-CommandExists starship).count -lt 5) { 
+            winget install Starship.Starship --force }
+            Write-Host "Install starship https://starship.rs/ if not installed"
     }
 }
 
@@ -97,8 +100,6 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/r
 $nerdfontsRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest" -UseBasicParsing
 $nerdfontsVersion = $nerdfontsRelease.tag_name
 $nerdfontsReleaseDate = [datetime]::Parse($nerdfontsRelease.published_at).ToString("yyyy-MM-dd")
-Write-Host "Nerd Fonts Version: $nerdfontsVersion"
-Write-Host "Release Date: $nerdfontsReleaseDate"
 
 # Define a path for the JSON file to save version and release date
 $jsonPath = "C:\ProgramData\nerd_fonts.json"
