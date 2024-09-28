@@ -1,6 +1,18 @@
 # By :    ABayoumy@outlook.com
 # GitHub: https://github.com/Aabayoumy/PS-Profile
 
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Error "This script requires PowerShell 7 or higher. Please upgrade your PowerShell version."
+    Read-Host "Press any key to exit"
+    exit
+}
+
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Error "This script needs to be run as an administrator."
+    Read-Host "Press any key to exit"
+    exit
+}
+
 function Test-CommandExists {
     param($command)
     $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
@@ -22,7 +34,6 @@ function Install-NerdFonts {
         [array]$fonts
     )
 
-    $FontDownloaded = $false
     foreach ($fontName in $fonts) {
             Write-Host "Downloading and installing $fontName font"
             Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$fontName.zip" -OutFile "$env:TEMP\$zipFileName.zip"
