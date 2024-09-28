@@ -19,19 +19,27 @@ if (-not (Test-CommandExists winget)) {
 function Install-NerdFonts {
     param (
         [string]$nerdfontsVersion,
-        [datetime]$nerdfontsReleaseDate,
-        [hashtable]$fonts
+        [array]$fonts
     )
+
     $FontDownloaded = $false
-    foreach ($font in $fonts.GetEnumerator()) {
-        $fontName = $font.Key
-        $zipFileName = $fontName
+    foreach ($fontName in $fonts) {
             Write-Host "Downloading and installing $fontName font"
-            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$zipFileName.zip" -OutFile "$env:TEMP\$zipFileName.zip"
-            Expand-Archive -LiteralPath "$env:TEMP\$zipFileName.zip" -DestinationPath "$env:TEMP\Fonts\" -force
-            $FontDownloaded = $true
+            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$fontName.zip" -OutFile "$env:TEMP\$zipFileName.zip"
+            Expand-Archive -LiteralPath "$env:TEMP\$fontName.zip" -DestinationPath "$env:TEMP\Fonts\" -force
     }
-    return $FontDownloaded
+
+    Write-Host "Install fonts"
+    $fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
+    foreach ($file in Get-ChildItem "$env:TEMP\Fonts\*.ttf")
+    {
+        $fileName = $file.Name
+        if (-not(Test-Path -Path "C:\Windows\fonts\$fileName" )) {
+            Write-Output $fileName
+            Get-ChildItem $file | ForEach-Object{ $fonts.CopyHere($_.fullname,16) }
+        }
+    }
+    Move-Item "$env:TEMP\Fonts\*.ttf" "C:\Windows\Fonts\" -force
 }
 
 
@@ -41,11 +49,19 @@ if (-not (Get-Module -Name "Terminal-Icons")) {
     Install-Module Terminal-Icons -force }
 
 Write-Host "Install Profile"
-If (Test-Path -Path "$PROFILE") { Move-Item $PROFILE "$($PROFILE)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"}
-# If (Test-Path -Path "$PROFILE.AllUsersAllHosts") { Move-Item $PROFILE.AllUsersAllHosts "$($PROFILE.AllUsersAllHosts)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"}
-Copy-Item profile.ps1 $PROFILE -force
+If (Test-Path -Path "$PROFILE") {
+    $BackupFile = "$($PROFILE)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"
+try {
+    Move-Item $PROFILE $BackupFile -force -ErrorAction Stop
+    Write-Host "Profile backed up to $BackupFile"
+} catch {
+    Write-Host "Failed to back up profile: $_"
+} }
+
+
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
 If (! (Test-Path -Path "~\.config\")) {mkdir ~\.config}
-Copy-Item starship.toml ~\.config\starship.toml
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/starship.toml" -OutFile "$env:USERPROFILE\.config\starship.toml"
 
 # Add the following lines to get and display the version
 $nerdfontsRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest" -UseBasicParsing
@@ -55,7 +71,7 @@ Write-Host "Nerd Fonts Version: $nerdfontsVersion"
 Write-Host "Release Date: $nerdfontsReleaseDate"
 
 # Define a path for the JSON file to save version and release date
-$jsonPath = "C:\ProgramData\nerd_fonts_ver_rel_date.json"
+$jsonPath = "C:\ProgramData\PS-Profile\nerd_fonts_ver_rel_date.json"
 
 # Create an object to hold version and release date
 $currentReleaseInfo = @{
@@ -78,26 +94,12 @@ if (Test-Path $jsonPath) {
 # If the JSON file does not exist or the version/release date has changed, update the JSON file
 $currentReleaseInfo | ConvertTo-Json | Set-Content -Path $jsonPath
 
-# Define font paths in a hashtable
-$fonts = @{
-    "FiraCode" = "FiraCode"
-    "Hack" = "Hack Nerd"
-    "JetBrainsMono" = "Jet Brains"
-    "SourceCodePro" = "Source Code"
-}
+# Define fonts  hashtable
+$fonts = @(
+    "FiraCode",
+    "Hack",
+    "JetBrainsMono",
+    "SourceCodePro"
+)
 
-$FontDownloaded = Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -nerdfontsReleaseDate $nerdfontsReleaseDate -fonts $fonts
-
-if ($FontDownloaded) {
-    Write-Host "Install fonts"
-    $fonts = (New-Object -ComObject Shell.Application).Namespace(0x14)
-    foreach ($file in Get-ChildItem "$env:TEMP\Fonts\*.ttf")
-    {
-        $fileName = $file.Name
-        if (-not(Test-Path -Path "C:\Windows\fonts\$fileName" )) {
-            Write-Output $fileName
-            Get-ChildItem $file | ForEach-Object{ $fonts.CopyHere($_.fullname,16) }
-        }
-    }
-    Move-Item "$env:TEMP\Fonts\*.ttf" "C:\Windows\Fonts\" -force
-}
+Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -fonts $fonts
