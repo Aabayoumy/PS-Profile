@@ -13,6 +13,14 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     exit
 }
 
+# Define fonts  hashtable
+$fonts = @(
+    "FiraCode",
+    "Hack",
+    "JetBrainsMono",
+    "SourceCodePro"
+)
+
 function Test-CommandExists {
     param($command)
     $exists = $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
@@ -82,7 +90,7 @@ Write-Host "Nerd Fonts Version: $nerdfontsVersion"
 Write-Host "Release Date: $nerdfontsReleaseDate"
 
 # Define a path for the JSON file to save version and release date
-$jsonPath = "C:\ProgramData\PS-Profile\nerd_fonts_ver_rel_date.json"
+$jsonPath = "C:\ProgramData\nerd_fonts.json"
 
 # Create an object to hold version and release date
 $currentReleaseInfo = @{
@@ -96,21 +104,12 @@ if (Test-Path $jsonPath) {
     $savedReleaseInfo = Get-Content $jsonPath | ConvertFrom-Json
 
     # Compare the current release info with the saved info
-    if ($savedReleaseInfo.Version -eq $currentReleaseInfo.Version -and $savedReleaseInfo.ReleaseDate -eq $currentReleaseInfo.ReleaseDate) {
+    if ($savedReleaseInfo.Version -eq $currentReleaseInfo.Version) {
         Write-Host "Nerd Fonts are already up to date."
-        return
+        exit
     }
 }
 
 # If the JSON file does not exist or the version/release date has changed, update the JSON file
 $currentReleaseInfo | ConvertTo-Json | Set-Content -Path $jsonPath
-
-# Define fonts  hashtable
-$fonts = @(
-    "FiraCode",
-    "Hack",
-    "JetBrainsMono",
-    "SourceCodePro"
-)
-
 Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -fonts $fonts

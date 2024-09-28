@@ -6,6 +6,6 @@ PS Profile with starship prompt & terminal icons:
 - Run: 
     ```bash 
     
-    pwsh -c "iwr https://raw.githubusercontent.com/Aabayoumy/PS-Profile/main/Setup.ps1 | iex"
+    pwsh -ExecutionPolicy Bypass -NoProfile -c "iwr https://raw.githubusercontent.com/Aabayoumy/PS-Profile/main/Setup.ps1 | iex"
     ```
 - 
