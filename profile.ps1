@@ -27,7 +27,9 @@ function ll { Get-ChildItem -Path . -Force -Hidden | Format-Table -AutoSize }
 
     HistorySearchCursorMovesToEnd = $true
     Colors = @{
-        "Command" = "#8181f7"
+      Command = 'Yellow'
+      Parameter = 'Green'
+      String = 'DarkCyan'
     }
   }
   Set-PSReadLineOption @PSReadLineOptions
@@ -37,6 +39,8 @@ function ll { Get-ChildItem -Path . -Force -Hidden | Format-Table -AutoSize }
   # Autocompleteion for Arrow keys
   Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+  Set-PSReadLineKeyHandler -Chord 'Ctrl+RightArrow' -Function ForwardWord
+  Set-PSReadLineKeyHandler -Chord 'Ctrl+LeftArrow' -Function BackwardWord
 
   Set-PSReadLineKeyHandler -Key Ctrl+z -Function Undo
 if ($host.Name -eq 'ConsoleHost')
