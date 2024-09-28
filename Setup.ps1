@@ -75,7 +75,9 @@ if (-not $installedModule) {
     $installedVersion = $installedModule.Version
     if ($installedVersion -lt $latestTerminalIconsVersion) {
         Write-Host "Updating Terminal-Icons from version $installedVersion to $latestTerminalIconsVersion"
-        Update-Module -Name Terminal-Icons -Force
+        Uninstall-Module -Name Terminal-Icons -AllVersions -Force
+        Install-Module -Name Terminal-Icons -Force
+        
     } else {
         Write-Host "Terminal-Icons module is already up to date."
     }
