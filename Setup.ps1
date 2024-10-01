@@ -27,8 +27,6 @@ function Test-CommandExists {
     return $exists
 }
 
-
-
 if (-not (Test-CommandExists winget)) {
     Write-Host "winget is not installed or not in your PATH. you have to install starship manually"
     Start-Process "https://starship.rs/" 
@@ -83,15 +81,37 @@ if (-not $installedModule) {
     }
 }
 
-Write-Host "Install Profile"
-If (Test-Path -Path "$PROFILE") {
-    $BackupFile = "$($PROFILE)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"
-try {
-    Move-Item $PROFILE $BackupFile -force -ErrorAction Stop
-    Write-Host "Profile backed up to $BackupFile"
-} catch {
-    Write-Host "Failed to back up profile: $_"
-} }
+# Checksum comparison for $PROFILE
+$remoteChecksumUrl = "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/sum.txt"
+$remoteChecksum = Invoke-WebRequest -Uri $remoteChecksumUrl -UseBasicParsing
+$localChecksum = Get-FileHash -Path $PROFILE -Algorithm MD5
+
+if ($remoteChecksum.Content.Trim() -eq $localChecksum.Hash) {
+    Write-Host "Local profile is up-to-date with remote checksum."
+} else {
+    Write-Host "Local profile differs from remote checksum. Downloading new profile."
+    # Backup old profile
+    If (Test-Path -Path "$PROFILE") {
+        $BackupFile = "$($PROFILE)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"
+        try {
+            Move-Item $PROFILE $BackupFile -force -ErrorAction Stop
+            Write-Host "Profile backed up to $BackupFile"
+        } catch {
+            Write-Host "Failed to back up profile: $_"
+        }
+    }
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
+}
+
+# Write-Host "Install Profile"
+# If (Test-Path -Path "$PROFILE") {
+#     $BackupFile = "$($PROFILE)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"
+# try {
+#     Move-Item $PROFILE $BackupFile -force -ErrorAction Stop
+#     Write-Host "Profile backed up to $BackupFile"
+# } catch {
+#     Write-Host "Failed to back up profile: $_"
+# } }
 
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
