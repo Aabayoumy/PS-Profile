@@ -9,7 +9,6 @@ Import-Module PSReadLine
 # Alias
 Set-Alias g git
 Set-Alias grep findstr
-Set-Alias l ls
 Set-Alias cat Get-Content
 Set-Alias rm Remove-Item
 
