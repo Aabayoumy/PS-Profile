@@ -47,7 +47,7 @@ function Install-NerdFonts {
 
     foreach ($fontName in $fonts) {
             Write-Host "Downloading and installing $fontName font"
-            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$fontName.zip" -OutFile "$env:TEMP\$zipFileName.zip"
+            Invoke-WebRequest -Uri "https://github.com/ryanoasis/nerd-fonts/releases/download/$($nerdfontsVersion)/$fontName.zip" -OutFile "$env:TEMP\$fontName.zip"
             Expand-Archive -LiteralPath "$env:TEMP\$fontName.zip" -DestinationPath "$env:TEMP\Fonts\" -force
     }
 
