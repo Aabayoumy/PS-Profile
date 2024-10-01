@@ -9,6 +9,20 @@ Import-Module PSReadLine
 # Alias
 Set-Alias g git
 Set-Alias grep findstr
+Set-Alias l ls
+Set-Alias cat Get-Content
+Set-Alias rm Remove-Item
+
+function gcp {
+    param (
+        [string]$commitMessage
+    )
+
+    git add .
+    git commit -m $commitMessage
+    git push
+}
+
 
 # Enhanced Listing
 function la { Get-ChildItem -Path . -Force | Format-Table -AutoSize }
