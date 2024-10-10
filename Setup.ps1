@@ -103,16 +103,24 @@ if ($remoteChecksum.Content.Trim() -eq $localChecksum.Hash) {
     Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
 }
 
-# Write-Host "Install Profile"
-# If (Test-Path -Path "$PROFILE") {
-#     $BackupFile = "$($PROFILE)-$((Get-Date).ToString('ddMMyyyy-HHmm')).bk"
-# try {
-#     Move-Item $PROFILE $BackupFile -force -ErrorAction Stop
-#     Write-Host "Profile backed up to $BackupFile"
-# } catch {
-#     Write-Host "Failed to back up profile: $_"
-# } }
 
+# Ensure the directory ~\.local\bin\ exists
+$localBinPath = "$env:USERPROFILE\.local\bin"
+if (-not (Test-Path -Path $localBinPath)) {
+    New-Item -ItemType Directory -Path $localBinPath -Force
+}
+
+# Check if winfetch.ps1 already exists
+$winfetchPath = "$localBinPath\winfetch.ps1"
+if (-not (Test-Path -Path $winfetchPath)) {
+    Write-Host "Downloading winfetch.ps1 as it does not exist."
+    Invoke-WebRequest "https://raw.githubusercontent.com/lptstr/winfetch/master/winfetch.ps1" -OutFile $winfetchPath -UseBasicParsing
+} else {
+    Write-Host "winfetch.ps1 already exists, skipping download."
+}
+
+# Copy winfetch folder to ~\.config
+Copy-Item -Path "winfetch" -Destination "~\.config\" -Recurse -Force
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
 If (! (Test-Path -Path "~\.config\")) {mkdir ~\.config}

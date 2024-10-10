@@ -25,7 +25,7 @@ function gcp {
 
 # Enhanced Listing
 function la { Get-ChildItem -Path . -Force | Format-Table -AutoSize }
-function ll { Get-ChildItem -Path . -Force -Hidden | Format-Table -AutoSize }
+function ll { Get-ChildItem -Path . -Force | Format-Table -AutoSize }
 
   $PSReadLineOptions = @{
     EditMode = "Emacs"
@@ -61,4 +61,5 @@ if ($host.Name -eq 'ConsoleHost')
   Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 }
 
+winfetch
 Invoke-Expression (&starship init powershell)
