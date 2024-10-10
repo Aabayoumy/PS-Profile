@@ -119,8 +119,13 @@ if (-not (Test-Path -Path $winfetchPath)) {
     Write-Host "winfetch.ps1 already exists, skipping download."
 }
 
-# Copy winfetch folder to ~\.config
-Copy-Item -Path "winfetch" -Destination "~\.config\winfetch" -Recurse -Force
+# download winfetch folder to ~\.config\winfetch
+if (-not (Test-Path -Path "$HOME\.config\winfetch\config.ps1")) {
+    if (-not (Test-Path -Path "$HOME\.config\winfetch")) { New-Item -ItemType Directory -Force -Path "$HOME\.config\winfetch" }
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/winfetch/config.ps1" -OutFile "$HOME\.config\winfetch\config.ps1"
+    Write-Output "Download completed: $HOME\.config\winfetch\config.ps1"
+}
+
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
 If (! (Test-Path -Path "~\.config\")) {mkdir ~\.config}
