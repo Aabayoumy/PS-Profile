@@ -1,6 +1,6 @@
 # PS-Profile
 PS Profile with PSReadLine, starship prompt & terminal icons:
-![2024-10-10 13_55_57-PowerShell](https://github.com/user-attachments/assets/9d104580-c54f-4f12-9e4b-176673f5a50f)
+![2024-10-10 14_03_15-PowerShell](https://github.com/user-attachments/assets/031bb6c0-3982-4c9f-b359-53357127a9ea)
 
 - Run powershell 7 as Administrator 
 - Run: 
