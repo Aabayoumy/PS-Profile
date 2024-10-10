@@ -120,7 +120,7 @@ if (-not (Test-Path -Path $winfetchPath)) {
 }
 
 # Copy winfetch folder to ~\.config
-Copy-Item -Path "winfetch" -Destination "~\.config\" -Recurse -Force
+Copy-Item -Path "winfetch" -Destination "~\.config\winfetch" -Recurse -Force
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
 If (! (Test-Path -Path "~\.config\")) {mkdir ~\.config}

@@ -61,5 +61,5 @@ if ($host.Name -eq 'ConsoleHost')
   Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 }
 
-winfetch
+.\.local\bin\winfetch.ps1
 Invoke-Expression (&starship init powershell)
