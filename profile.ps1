@@ -60,6 +60,7 @@ if ($host.Name -eq 'ConsoleHost')
 {
   Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 }
+~\.local\bin\winfetch.ps1
 
-.\.local\bin\winfetch.ps1
+if ($env:TERM_PROGRAM -eq "vscode") { . "$(code --locate-shell-integration-path pwsh)" }
 Invoke-Expression (&starship init powershell)
