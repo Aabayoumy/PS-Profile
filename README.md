@@ -1,6 +1,6 @@
 # PS-Profile
 PS Profile with starship prompt & terminal icons:
-![image](https://user-images.githubusercontent.com/90580037/205481207-c775caad-dfa4-427f-89b7-7522a0a25c01.png)
+![2024-10-10 13_55_57-PowerShell](https://github.com/user-attachments/assets/9d104580-c54f-4f12-9e4b-176673f5a50f)
 
 - Open powershell 7 as Administrator 
 - Run: 
