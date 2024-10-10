@@ -113,7 +113,7 @@ if (-not (Test-Path -Path $localBinPath)) {
 # Check if winfetch.ps1 already exists
 $winfetchPath = "$localBinPath\winfetch.ps1"
 if (-not (Test-Path -Path $winfetchPath)) {
-    Write-Host "Downloading winfetch.ps1 as it does not exist."
+    Write-Host "Downloading winfetch.ps1."
     Invoke-WebRequest "https://raw.githubusercontent.com/lptstr/winfetch/master/winfetch.ps1" -OutFile $winfetchPath -UseBasicParsing
 } else {
     Write-Host "winfetch.ps1 already exists, skipping download."
