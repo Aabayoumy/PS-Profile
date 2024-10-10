@@ -8,4 +8,4 @@ PS Profile with PSReadLine, starship prompt & terminal icons:
     
     pwsh -ExecutionPolicy Bypass -NoProfile -c "iwr https://raw.githubusercontent.com/Aabayoumy/PS-Profile/main/Setup.ps1 | iex"
     ```
-- 
+- Windows Terminal Color Scheme & starship config (with some edit) from  https://github.com/VictorPLopes/OneDark-Pro-Windows-Terminal
