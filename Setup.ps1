@@ -62,6 +62,23 @@ function Install-NerdFonts {
     Move-Item "$env:TEMP\Fonts\*.ttf" "C:\Windows\Fonts\" -force
 }
 
+$latestZModuleVersion = (Find-Module -Name "z").Version
+$installedZModule = Get-Module -ListAvailable -Name "z"
+
+if (-not $installedZModule) {
+    Write-Host "Installing z module" 
+    Install-Module -Name z -Force
+} else {
+    $installedZModuleVersion = $installedZModule.Version
+    if ($installedZModuleVersion -lt $latestZModuleVersion) {
+        Write-Host "Updating z module from version $installedZModuleVersion to $latestZModuleVersion"
+        Uninstall-Module -Name z -AllVersions -Force
+        Install-Module -Name z -Force
+    } else {
+        Write-Host "z module is already up to date."
+    }
+}
+
 
 $latestTerminalIconsVersion = (Find-Module -Name "Terminal-Icons").Version
 $installedModule = Get-Module -ListAvailable -Name "Terminal-Icons"
@@ -128,7 +145,7 @@ if (-not (Test-Path -Path "$HOME\.config\winfetch\config.ps1")) {
 
 
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/profile.ps1" -OutFile $PROFILE
-If (! (Test-Path -Path "~\.config\")) {mkdir ~\.config}
+If (! (Test-Path -Path "$HOME\.config\")) {mkdir ~\.config}
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Aabayoumy/PS-Profile/refs/heads/main/starship.toml" -OutFile "$env:USERPROFILE\.config\starship.toml"
 
 # Add the following lines to get and display the version
@@ -151,14 +168,16 @@ if (Test-Path $jsonPath) {
     $savedReleaseInfo = Get-Content $jsonPath | ConvertFrom-Json
 
     # Compare the current release info with the saved info
-    if ($savedReleaseInfo.Version -eq $currentReleaseInfo.Version) {
-        Write-Host "Nerd Fonts are already up to date."
-        exit
+    if ($savedReleaseInfo.Version -ne $currentReleaseInfo.Version) 
+    { # If the version/release date has changed, update the JSON file
+        Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -fonts $fonts
     }
 }
+else { # If the JSON file does not , update the JSON file
+    Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -fonts $fonts
+}
+
 
 # If the JSON file does not exist or the version/release date has changed, update the JSON file
 $currentReleaseInfo | ConvertTo-Json | Set-Content -Path $jsonPath
-Install-NerdFonts -nerdfontsVersion $nerdfontsVersion -fonts $fonts
-
 Write-Host "Profile has been installed. Please restart your shell to reflect changes!" -ForegroundColor Magenta
