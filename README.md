@@ -13,4 +13,4 @@ PS Profile with PSReadLine, starship prompt & terminal icons:
 
 - you can change starship theme by replace the starship file
 
-- ![image](https://github.com/user-attachments/assets/93697e98-d647-40d3-b4dc-64244deb793c)
+![image](https://github.com/user-attachments/assets/93697e98-d647-40d3-b4dc-64244deb793c)
